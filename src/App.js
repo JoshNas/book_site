@@ -50,8 +50,8 @@ class App extends Component {
 
     const Navbar = (props) =>
       <nav className="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" id="nav">
-        <a class="navbar-brand" href="/">
-          <img src={logo} width="30" height="30" class="d-inline-block align-top" alt="logo"/>
+        <a className="navbar-brand" href="/">
+          <img src={logo} width="30" height="30" className="d-inline-block align-top" alt="logo"/>
            <span id="title">Social Books</span>
         </a>
         <div className="ml-auto">

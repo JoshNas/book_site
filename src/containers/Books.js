@@ -151,15 +151,11 @@ export default function Books(props) {
             isLoading={isLoading}
             disabled={!validateForm()}
           />
-          <LoaderButton
-            block
-            text="Delete"
-            loadingText="Deleting"
-            bsSize="large"
-            bsStyle="danger"
-            onClick={handleDelete}
-            isLoading={isDeleting}
-          />
+          <button className="btn btn-danger btn-lg btn-block" onClick={handleDelete}>{!isDeleting ? ("Delete") :
+            (<div class="spinner-border text-danger" role="status">
+              <span class="sr-only">Deleting...</span>
+            </div>)}
+          </button>
         </form>
       )}
     </div>
