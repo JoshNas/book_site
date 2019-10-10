@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import "./App.css";
 import Routes from "./Routes";
+import logo from "./img/logo.png"
 
 class App extends Component {
   constructor(props) {
@@ -49,8 +50,11 @@ class App extends Component {
 
     const Navbar = (props) =>
       <nav className="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" id="nav">
-        <div className="collapse navbar-collapse">
-          Welcome
+        <a class="navbar-brand" href="/">
+          <img src={logo} width="30" height="30" class="d-inline-block align-top" alt="logo"/>
+           <span id="title">Social Books</span>
+        </a>
+        <div className="ml-auto">
           {props.authenticated ? (
             <button className="btn btn-primary" onClick={this.handleLogout}>Logout</button>
           ) : (
@@ -60,6 +64,7 @@ class App extends Component {
             </div>
           )}
         </div>
+
       </nav>
 
     return (

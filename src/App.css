@@ -5,3 +5,11 @@
 .App .navbar-brand {
   font-weight: bold;
 }
+
+.App #title {
+  margin-left: 10px;
+}
+
+.App .navbar .btn {
+  margin-left: 10px;
+}

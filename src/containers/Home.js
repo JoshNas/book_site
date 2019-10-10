@@ -55,7 +55,7 @@ export default function Home(props) {
 
   function renderBooks() {
     return (
-      <div className="books">
+      <div className="p-2 bd-highlight books">
         <h1>Your Books</h1>
           {!isLoading && renderBooksList(books)}
       </div>
@@ -63,8 +63,11 @@ export default function Home(props) {
   }
 
   return (
-    <div className="Home">
+    <div className="d-flex flex-column bd-highlight Home">
       {props.isAuthenticated ? renderBooks() : renderLander()}
+      <div className="p-2 bd-highlight">
+        <img src={homeBackground} className="img-fluid rounded" alt="Reading is fun"/>
+      </div>
     </div>
   );
 }
