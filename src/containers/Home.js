@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
 import { API } from "aws-amplify";
 import "./Home.css";
 import homeBackground from "../img/homeBackground.jpg"
@@ -32,24 +30,16 @@ export default function Home(props) {
     return API.get("books", "/books");
   }
 
-  function renderNotesList(books) {
+  function renderBooksList(books) {
     return [{}].concat(books).map((book, i) =>
+      /* keeps create new button on top */
       i !== 0 ? (
-        <LinkContainer key={book.bookId} to={`/books/${book.bookId}`}>
-
-
-          <ListGroupItem header={book.content.trim().split("\n")[0]}>
-            {book.content.toLocaleString() +  " Created: " + new Date(book.createdAt).toLocaleString()}
-          </ListGroupItem>
-        </LinkContainer>
+        <div class="list-group">
+          <a href={`/books/${book.bookId}`} class="list-group-item list-group-item-action">
+          {book.content + " Created: " + new Date(book.createdAt).toLocaleString()}</a>
+        </div>
       ) : (
-        <LinkContainer key="book" to="/books/new">
-          <ListGroupItem>
-            <h4>
-              <b>{"\uFF0B"}</b> Enter a new book
-            </h4>
-          </ListGroupItem>
-        </LinkContainer>
+        <a class="btn btn-primary btn-lg btn-block" href="/books/new" role="button">Enter new book</a>
       )
     );
   }
@@ -63,20 +53,18 @@ export default function Home(props) {
     );
   }
 
-  function renderNotes() {
+  function renderBooks() {
     return (
       <div className="books">
         <h1>Your Books</h1>
-        <ListGroup>
-          {!isLoading && renderNotesList(books)}
-        </ListGroup>
+          {!isLoading && renderBooksList(books)}
       </div>
     );
   }
 
   return (
     <div className="Home">
-      {props.isAuthenticated ? renderNotes() : renderLander()}
+      {props.isAuthenticated ? renderBooks() : renderLander()}
     </div>
   );
 }
