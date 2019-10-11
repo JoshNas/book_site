@@ -11,7 +11,6 @@ export default class NewBook extends Component {
     super(props);
 
     this.file = null;
-
     this.state = {
       isLoading: null,
       content: ""
@@ -58,7 +57,6 @@ export default class NewBook extends Component {
     }
   }
 
-
   createBook(book) {
     return API.post("books", "/books", {
       body: book
@@ -81,6 +79,7 @@ export default class NewBook extends Component {
             <Form.Label>Attachment</Form.Label>
             <Form.Control onChange={this.handleFileChange} type="file" />
           </Form.Group>
+
           <LoaderButton
             block
             bsStyle="primary"

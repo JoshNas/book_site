@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { API, Storage } from "aws-amplify";
 import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
-import LoaderButton from "../components/LoaderButton";
 import { s3Upload } from "../libs/awsLib";
 import config from "../config";
 import "./Books.css";
@@ -119,7 +118,7 @@ export default function Books(props) {
           <FormGroup controlId="content">
             <FormControl
               value={content}
-              componentClass="textarea"
+              componentclass="textarea"
               onChange={e => setContent(e.target.value)}
             />
           </FormGroup>
@@ -141,16 +140,11 @@ export default function Books(props) {
             {!book.attachment && <FormLabel>Attachment</FormLabel>}
             <FormControl onChange={handleFileChange} type="file" />
           </FormGroup>
-          <LoaderButton
-            block
-            type="submit"
-            text="Update"
-            loadingText="Updating"
-            bsSize="large"
-            bsStyle="primary"
-            isLoading={isLoading}
-            disabled={!validateForm()}
-          />
+          <button className="btn btn-primary btn-lg btn-block" onClick={handleSubmit}>{!isLoading ? ("Update") :
+            (<div class="spinner-border text-primary" role="status">
+              <span class="sr-only">Updating...</span>
+            </div>)}
+          </button>
           <button className="btn btn-danger btn-lg btn-block" onClick={handleDelete}>{!isDeleting ? ("Delete") :
             (<div class="spinner-border text-danger" role="status">
               <span class="sr-only">Deleting...</span>
