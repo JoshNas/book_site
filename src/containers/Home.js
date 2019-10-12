@@ -34,12 +34,14 @@ export default function Home(props) {
     return [{}].concat(books).map((book, i) =>
       /* keeps create new button on top */
       i !== 0 ? (
-        <div class="list-group">
-          <a href={`/books/${book.bookId}`} class="list-group-item list-group-item-action">
-          {book.content + " Created: " + new Date(book.createdAt).toLocaleString()}</a>
+        <div className="list-group">
+          <a href={`/books/${book.bookId}`} className="list-group-item list-group-item-action">
+            <p>{book.title}</p>
+            <p>{" Progress: " + book.currentPage / book.pages}</p>
+          </a>
         </div>
       ) : (
-        <a class="btn btn-primary btn-lg btn-block" href="/books/new" role="button">Enter new book</a>
+        <a className="btn btn-primary btn-lg btn-block" href="/books/new" role="button">Enter new book</a>
       )
     );
   }

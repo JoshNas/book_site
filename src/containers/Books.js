@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
 import { API, Storage } from "aws-amplify";
-import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { s3Upload } from "../libs/awsLib";
 import config from "../config";
 import "./Books.css";
@@ -8,9 +7,13 @@ import "./Books.css";
 export default function Books(props) {
   const file = useRef(null);
   const [book, setBook] = useState(null);
-  const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
+  const [page, setPage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  {/* Update this from input*/}
+  const newPage = 13;
+
 
   useEffect(() => {
     function loadBook() {
@@ -20,14 +23,19 @@ export default function Books(props) {
     async function onLoad() {
       try {
         const book = await loadBook();
-        const { content, attachment } = book;
+        const title = book.title
+
+        const page = book.currentPage
+        const attachment = book.attachment
 
         if (attachment) {
           book.attachmentURL = await Storage.vault.get(attachment);
         }
 
-        setContent(content);
+        setTitle(title);
         setBook(book);
+        setPage(page);
+        console.log(newPage)
       } catch (e) {
         alert(e);
       }
@@ -37,7 +45,7 @@ export default function Books(props) {
   }, [props.match.params.id]);
 
   function validateForm() {
-    return content.length > 0;
+    return title.length > 0;
   }
 
   function formatFilename(str) {
@@ -47,6 +55,7 @@ export default function Books(props) {
   function handleFileChange(event) {
     file.current = event.target.files[0];
   }
+
 
   function saveBook(book) {
     return API.put("books", `/books/${props.match.params.id}`, {
@@ -73,9 +82,8 @@ export default function Books(props) {
       if (file.current) {
         attachment = await s3Upload(file.current);
       }
-
       await saveBook({
-        content,
+        newPage,
         attachment: attachment || book.attachment
       });
       props.history.push("/");
@@ -113,45 +121,23 @@ export default function Books(props) {
 
   return (
     <div className="Books">
-      {book && (
-        <form onSubmit={handleSubmit}>
-          <FormGroup controlId="content">
-            <FormControl
-              value={content}
-              componentclass="textarea"
-              onChange={e => setContent(e.target.value)}
-            />
-          </FormGroup>
-          {book.attachment && (
-            <FormGroup>
-              <FormLabel>Attachment</FormLabel>
-              <FormControl.Static>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={book.attachmentURL}
-                >
-                  {formatFilename(book.attachment)}
-                </a>
-              </FormControl.Static>
-            </FormGroup>
-          )}
-          <FormGroup controlId="file">
-            {!book.attachment && <FormLabel>Attachment</FormLabel>}
-            <FormControl onChange={handleFileChange} type="file" />
-          </FormGroup>
-          <button className="btn btn-primary btn-lg btn-block" onClick={handleSubmit}>{!isLoading ? ("Update") :
-            (<div class="spinner-border text-primary" role="status">
-              <span class="sr-only">Updating...</span>
-            </div>)}
-          </button>
-          <button className="btn btn-danger btn-lg btn-block" onClick={handleDelete}>{!isDeleting ? ("Delete") :
-            (<div class="spinner-border text-danger" role="status">
-              <span class="sr-only">Deleting...</span>
-            </div>)}
-          </button>
-        </form>
-      )}
+      <form>
+      <h3>{title}</h3>
+        <div className="form-group">
+          <label for="current_page">Currently on page: {page}</label>
+          <input className="form-control form-control-lg" type="text" placeholder="new page" />
+        </div>
+      </form>
+        <button className="btn btn-primary btn-lg btn-block" onClick={handleSubmit}>{!isLoading ? ("Update") :
+          (<div className="spinner-border text-primary" role="status">
+            <span className="sr-only">Updating...</span>
+          </div>)}
+        </button>
+        <button className="btn btn-danger btn-lg btn-block" onClick={handleDelete}>{!isDeleting ? ("Finished") :
+          (<div className="spinner-border text-danger" role="status">
+            <span className="sr-only">Deleting...</span>
+          </div>)}
+        </button>
     </div>
-  );
+  )
 }

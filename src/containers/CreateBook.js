@@ -5,17 +5,24 @@ import { s3Upload } from "../libs/awsLib";
 import LoaderButton from "../components/LoaderButton";
 import config from "../config";
 import "./NewBook.css";
-import { BookApp } from "../components/GetBook"
+import $ from 'jquery';
 
-export default class NewBook extends Component {
+
+
+export class CreateBook extends Component {
   constructor(props) {
     super(props);
 
     this.file = null;
     this.state = {
       isLoading: null,
-      content: ""
+      content: "",
+      title: "",
+      author: "",
+      pages: null
     };
+
+    this.getBooks = this.getBooks.bind(this)
   }
 
   validateForm() {
@@ -49,7 +56,9 @@ export default class NewBook extends Component {
 
       await this.createBook({
         attachment,
-        content: this.state.content
+        title: this.state.title,
+        author: this.state.author,
+        pages: this.state.pages
       });
       this.props.history.push("/");
     } catch (e) {
@@ -64,6 +73,30 @@ export default class NewBook extends Component {
     });
   }
 
+
+
+  getBooks() {
+    console.log("calling get books")
+    console.log(this.state.content)
+    const search = this.state.content
+
+    $.ajax({
+      url: 'https://www.googleapis.com/books/v1/volumes?q=' + search,
+      dataType:  "json",
+        success: (data) => {
+          this.setState({
+            title: data.items[0].volumeInfo.title,
+            author: data.items[0].volumeInfo.authors,
+            pages: data.items[0].volumeInfo.pageCount
+          })
+          console.log(data.items[0])
+        },
+        type: 'GET'
+    })
+
+  }
+
+
   render() {
     return (
       <div className="NewBook">
@@ -76,6 +109,7 @@ export default class NewBook extends Component {
               componentclass="textarea"
             />
           </Form.Group>
+
           <Form.Group controlId="file">
             <Form.Label>Attachment</Form.Label>
             <Form.Control onChange={this.handleFileChange} type="file" />
@@ -83,7 +117,6 @@ export default class NewBook extends Component {
 
           <LoaderButton
             block
-
             disabled={!this.validateForm()}
             type="submit"
             isLoading={this.state.isLoading}
@@ -91,7 +124,10 @@ export default class NewBook extends Component {
             loadingText="Creating…"
           />
         </form>
-        <BookApp />
+        <button onClick={this.getBooks}>Search</button>
+        <div>{this.state.title}</div>
+        <div>{this.state.author}</div>
+        <div>{this.state.pages}</div>
       </div>
     );
   }
