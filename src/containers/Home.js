@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { API } from "aws-amplify";
 import "./Home.css";
+import ProgressBar from 'react-bootstrap/ProgressBar'
 import homeBackground from "../img/homeBackground.jpg"
 
 export default function Home(props) {
@@ -8,6 +9,7 @@ export default function Home(props) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    {/*Check is user is logged in */}
     async function onLoad() {
       if (!props.isAuthenticated) {
         return;
@@ -37,7 +39,8 @@ export default function Home(props) {
         <div className="list-group">
           <a href={`/books/${book.bookId}`} className="list-group-item list-group-item-action">
             <p>{book.title}</p>
-            <p>{" Progress: " + book.currentPage / book.pages}</p>
+            <ProgressBar now={(book.currentPage / book.pages) * 100}
+            label={`${Math.round((book.currentPage / book.pages) * 100)}%`}/>
           </a>
         </div>
       ) : (
