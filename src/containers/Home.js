@@ -36,7 +36,7 @@ export default function Home(props) {
     return [{}].concat(books).map((book, i) =>
       /* keeps create new button on top */
       i !== 0 ? (
-        <div className="list-group">
+        <div className="list-group" key={i}>
           <a href={`/books/${book.bookId}`} className="list-group-item list-group-item-action">
             <p>{book.title}</p>
             <ProgressBar now={(book.currentPage / book.pages) * 100}
@@ -44,7 +44,7 @@ export default function Home(props) {
           </a>
         </div>
       ) : (
-        <a className="btn btn-primary btn-lg btn-block" href="/books/new" role="button">Enter new book</a>
+        <a key={i} className="btn btn-primary btn-lg btn-block" href="/books/new" role="button">Enter new book</a>
       )
     );
   }

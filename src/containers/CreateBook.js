@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { Form } from "react-bootstrap";
 import { API } from "aws-amplify";
 import { s3Upload } from "../libs/awsLib";
-import LoaderButton from "../components/LoaderButton";
 import config from "../config";
-import "./NewBook.css";
+import "./CreateBook.css";
 import $ from 'jquery';
 
 
@@ -18,7 +16,9 @@ export class CreateBook extends Component {
       searchTerm: "",
       title: "",
       author: "",
-      pages: null
+      pages: 0,
+      image: null,
+      books: []
     };
 
     this.getBooks = this.getBooks.bind(this)
@@ -72,11 +72,7 @@ export class CreateBook extends Component {
     });
   }
 
-
-
   getBooks() {
-    console.log("calling get books")
-    console.log(this.state.searchTerm)
     const search = this.state.searchTerm
 
     $.ajax({
@@ -84,29 +80,67 @@ export class CreateBook extends Component {
       dataType:  "json",
         success: (data) => {
           this.setState({
+            books: data.items.slice(1),
             title: data.items[0].volumeInfo.title,
             author: data.items[0].volumeInfo.authors,
-            pages: data.items[0].volumeInfo.pageCount
+            pages: data.items[0].volumeInfo.pageCount,
+            image: data.items[0].volumeInfo.imageLinks.thumbnail
           })
-          console.log(data.items[0])
+          console.log(data.items)
+          console.log(this.state.books)
         },
         type: 'GET'
     })
+    console.log(this.state.books[0])
   }
+
+  handleSelect = (e, book) => {
+    this.setState({
+      title: book.title,
+      author: book.authors,
+      pages: book.pageCount,
+      image: book.imageLinks.thumbnail
+    })
+  }
+
 
   render() {
     return (
       <div className="NewBook">
-        <form onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <label>What are you reading?</label>
-            <input className="form-control form-control-lg" onChange={this.handleChange} value={this.state.searchTerm} id="searchTerm"></input>
+        <div className="d-flex flex-column">
+          <form id="searchForm">
+            <div className="form-group">
+              <label>What are you reading?</label>
+              <input className="form-control form-control-lg" onChange={this.handleChange} value={this.state.searchTerm} id="searchTerm"></input>
+            </div>
+          </form>
+          <button className="btn btn-info search" onClick={this.getBooks}>Search</button>
+        </div>
+
+        {
+          this.state.title &&
+          <div className="d-flex flex-column bd-highlight mb-3 bg-secondary text-white rounded" id="currentBook">
+            <button className="btn btn-primary" onClick={this.handleSubmit}>Add Your Book:</button>
+            <p className="p-2 bd-highlight">{this.state.title}</p>
+            <p className="p-2 bd-highlight">by: {this.state.author}</p>
+            <p className="p-2 bd-highlight">pages: {this.state.pages}</p>
+              <img className="img-fluid align-self-center" src={this.state.image} alt="cover"></img>
+            <p className="p-2 bd-highlight" id="refine">If this is not your book select it from below. If you still don't see please refine your search.</p>
           </div>
-        </form>
-        <button onClick={this.getBooks}>Search</button>
-        <div>{this.state.title}</div>
-        <div>{this.state.author}</div>
-        <div>{this.state.pages}</div>
+        }
+
+        {
+          this.state.books.map((book, index) => (
+            <div key={index} className="d-flex flex-column bd-highlight mb-3 bg-secondary text-white">
+
+              <button onClick={((e) => this.handleSelect(e, book.volumeInfo))} className="p-2 bd-highlight">
+              <span>{book.volumeInfo.title}</span></button>
+              <p className="p-2 bd-highlight">by: {book.volumeInfo.authors}</p>
+              <p className="p-2 bd-highlight">pages: {book.volumeInfo.pageCount}</p>
+              <img className="img-fluid align-self-center" src={book.volumeInfo.imageLinks.thumbnail} alt="cover"></img>
+            </div>
+          ))
+        }
       </div>
     );
   }

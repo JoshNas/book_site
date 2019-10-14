@@ -1,11 +1,11 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { API, Storage } from "aws-amplify";
 import { s3Upload } from "../libs/awsLib";
 import config from "../config";
 import "./Books.css";
 
 export default function Books(props) {
-  const file = useRef(null);
+  // const file = useRef(null);
   const [book, setBook] = useState(null);
   const [title, setTitle] = useState("");
   const [page, setPage] = useState(0);
@@ -13,6 +13,7 @@ export default function Books(props) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [newPage, setNewPage] = useState(0);
   const [newFile, setNewFile] = useState(null);
+
 
   useEffect(() => {
     function loadBook() {
@@ -25,7 +26,6 @@ export default function Books(props) {
         const title = book.title
         const page = book.currentPage
         const attachment = book.attachment
-        console.log(attachment)
 
         if (attachment) {
           book.attachmentURL = await Storage.vault.get(attachment);
@@ -105,6 +105,9 @@ export default function Books(props) {
       setIsDeleting(false);
     }
   }
+
+
+
 
   return (
     <div className="Books">

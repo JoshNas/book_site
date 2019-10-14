@@ -3,7 +3,10 @@
   margin-top: 125px;
 }
 
-.NewBook form textarea {
-  height: 300px;
-  font-size: 24px;
+#refine {
+  color: lightgrey
+}
+
+#currentBook {
+  margin-top: 20px;
 }
