@@ -8,7 +8,6 @@ import "./NewBook.css";
 import $ from 'jquery';
 
 
-
 export class CreateBook extends Component {
   constructor(props) {
     super(props);
@@ -16,7 +15,7 @@ export class CreateBook extends Component {
     this.file = null;
     this.state = {
       isLoading: null,
-      content: "",
+      searchTerm: "",
       title: "",
       author: "",
       pages: null
@@ -26,7 +25,7 @@ export class CreateBook extends Component {
   }
 
   validateForm() {
-    return this.state.content.length > 0;
+    return this.state.searchTerm.length > 0;
   }
 
   handleChange = event => {
@@ -77,11 +76,11 @@ export class CreateBook extends Component {
 
   getBooks() {
     console.log("calling get books")
-    console.log(this.state.content)
-    const search = this.state.content
+    console.log(this.state.searchTerm)
+    const search = this.state.searchTerm
 
     $.ajax({
-      url: 'https://www.googleapis.com/books/v1/volumes?q=' + search,
+      url: 'https://www.googleapis.com/books/v1/volumes?q=' + search +'&maxResults=10',
       dataType:  "json",
         success: (data) => {
           this.setState({
@@ -93,36 +92,16 @@ export class CreateBook extends Component {
         },
         type: 'GET'
     })
-
   }
-
 
   render() {
     return (
       <div className="NewBook">
         <form onSubmit={this.handleSubmit}>
-          <Form.Label>What are you reading?</Form.Label>
-          <Form.Group controlId="content">
-            <Form.Control
-              onChange={this.handleChange}
-              value={this.state.content}
-              componentclass="textarea"
-            />
-          </Form.Group>
-
-          <Form.Group controlId="file">
-            <Form.Label>Attachment</Form.Label>
-            <Form.Control onChange={this.handleFileChange} type="file" />
-          </Form.Group>
-
-          <LoaderButton
-            block
-            disabled={!this.validateForm()}
-            type="submit"
-            isLoading={this.state.isLoading}
-            text="Create"
-            loadingText="Creating…"
-          />
+          <div className="form-group">
+            <label>What are you reading?</label>
+            <input className="form-control form-control-lg" onChange={this.handleChange} value={this.state.searchTerm} id="searchTerm"></input>
+          </div>
         </form>
         <button onClick={this.getBooks}>Search</button>
         <div>{this.state.title}</div>

@@ -9,7 +9,7 @@ export default function Home(props) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    {/*Check is user is logged in */}
+    /*Check is user is logged in */
     async function onLoad() {
       if (!props.isAuthenticated) {
         return;

@@ -8,12 +8,11 @@ export default function Books(props) {
   const file = useRef(null);
   const [book, setBook] = useState(null);
   const [title, setTitle] = useState("");
-  const [page, setPage] = useState("");
+  const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [newPage, setNewPage] = useState(0);
-  {/* Update this from input*/}
-
+  const [newFile, setNewFile] = useState(null);
 
   useEffect(() => {
     function loadBook() {
@@ -24,9 +23,9 @@ export default function Books(props) {
       try {
         const book = await loadBook();
         const title = book.title
-
         const page = book.currentPage
         const attachment = book.attachment
+        console.log(attachment)
 
         if (attachment) {
           book.attachmentURL = await Storage.vault.get(attachment);
@@ -35,7 +34,7 @@ export default function Books(props) {
         setTitle(title);
         setBook(book);
         setPage(page);
-        console.log(newPage)
+        setNewPage(page)
       } catch (e) {
         alert(e);
       }
@@ -43,20 +42,6 @@ export default function Books(props) {
 
     onLoad();
   }, [props.match.params.id]);
-
-
-
-  function validateForm() {
-    return title.length > 0;
-  }
-
-  function formatFilename(str) {
-    return str.replace(/^\w+-/, "");
-  }
-
-  function handleFileChange(event) {
-    file.current = event.target.files[0];
-  }
 
 
   function saveBook(book) {
@@ -70,7 +55,7 @@ export default function Books(props) {
 
     event.preventDefault();
 
-    if (file.current && file.current.size > config.MAX_ATTACHMENT_SIZE) {
+    if (newFile && newFile.size > config.MAX_ATTACHMENT_SIZE) {
       alert(
         `Please pick a file smaller than ${config.MAX_ATTACHMENT_SIZE /
           1000000} MB.`
@@ -81,8 +66,8 @@ export default function Books(props) {
     setIsLoading(true);
 
     try {
-      if (file.current) {
-        attachment = await s3Upload(file.current);
+      if (newFile) {
+        attachment = await s3Upload(newFile);
       }
       await saveBook({
         newPage,
@@ -126,9 +111,13 @@ export default function Books(props) {
       <form>
       <h3>{title}</h3>
         <div className="form-group">
-          <label for="current_page">Currently on page: {page}</label>
-          <input className="form-control form-control-lg" type="number" placeholder="new page"
+          <label htmlFor="newPage">Currently on page: {page}</label>
+          <input className="form-control form-control-lg" type="number" placeholder="new page" name="newPage"
           value={newPage} onChange={e => setNewPage(e.target.value)}/>
+        </div>
+        <div className="form-group">
+          <label htmlFor="newImage">Add an image:</label>
+          <input type="file" name="newImage" onChange={e => setNewFile(e.target.files[0])}></input>
         </div>
       </form>
         <button className="btn btn-primary btn-lg btn-block" onClick={handleSubmit}>{!isLoading ? ("Update") :
