@@ -11,8 +11,8 @@ export default function Books(props) {
   const [page, setPage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [newPage, setNewPage] = useState(0);
   {/* Update this from input*/}
-  const newPage = 13;
 
 
   useEffect(() => {
@@ -43,6 +43,8 @@ export default function Books(props) {
 
     onLoad();
   }, [props.match.params.id]);
+
+
 
   function validateForm() {
     return title.length > 0;
@@ -125,7 +127,8 @@ export default function Books(props) {
       <h3>{title}</h3>
         <div className="form-group">
           <label for="current_page">Currently on page: {page}</label>
-          <input className="form-control form-control-lg" type="text" placeholder="new page" />
+          <input className="form-control form-control-lg" type="number" placeholder="new page"
+          value={newPage} onChange={e => setNewPage(e.target.value)}/>
         </div>
       </form>
         <button className="btn btn-primary btn-lg btn-block" onClick={handleSubmit}>{!isLoading ? ("Update") :
