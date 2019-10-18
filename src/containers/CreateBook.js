@@ -125,6 +125,12 @@ export class CreateBook extends Component {
             <p className="p-2 bd-highlight">by: {this.state.author}</p>
             <p className="p-2 bd-highlight">pages: {this.state.pages}</p>
               <img className="img-fluid align-self-center" src={this.state.image} alt="cover"></img>
+              <form>
+                <div class="form-group">
+                  <label for="imageUpload">Upload an image</label>
+                  <input type="file" class="form-control-file" id="imageUpload" onChange={this.handleFileChange}/>
+                </div>
+              </form>
             <p className="p-2 bd-highlight" id="refine">If this is not your book select it from below. If you still don't see please refine your search.</p>
           </div>
         }
